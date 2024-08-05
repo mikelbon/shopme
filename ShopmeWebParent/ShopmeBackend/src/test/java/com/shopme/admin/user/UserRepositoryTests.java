@@ -7,11 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
+@DataJpaTest(showSql = false)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Rollback(false)
 public class UserRepositoryTests {
@@ -34,13 +38,13 @@ public class UserRepositoryTests {
 
     @Test
     public void testCreateUserWithTwoRoles() {
-        User userBencarhuas = new User("bencarhuas@gmail.com", "123456", "Benjamin", "Carhuas");
+        User acarhuas = new User("amanda.carhuas@gmail.com", "123456", "Amanda", "Carhuas");
         Role roleEditor = new Role(3);
         Role roleAssistant = new Role(4);
-        userBencarhuas.addRole(roleEditor);
-        userBencarhuas.addRole(roleAssistant);
+        acarhuas.addRole(roleEditor);
+        acarhuas.addRole(roleAssistant);
 
-        User savedUser = repo.save(userBencarhuas);
+        User savedUser = repo.save(acarhuas);
         assertThat(savedUser.getId()).isGreaterThan(0);
     }
 
@@ -52,7 +56,7 @@ public class UserRepositoryTests {
 
     @Test
     public void testGetUserById() {
-        User userMcarhuas = repo.findById(3).get();
+        User userMcarhuas = repo.findById(6).get();
         System.out.println(userMcarhuas);
         assertThat(userMcarhuas).isNotNull();
     }
@@ -64,6 +68,7 @@ public class UserRepositoryTests {
         userMcarhuas.setEmail("mikel_ct@hotmail.com");
         repo.save(userMcarhuas);
     }
+
     @Test
     public void testUpdateUserRoles() {
         User userBencarhuas = repo.findById(3).get();
@@ -74,11 +79,55 @@ public class UserRepositoryTests {
         userBencarhuas.addRole(roleEditor);
         repo.save(userBencarhuas);
     }
+
     @Test
     public void testDeleteUser() {
         Integer userId = 3;
         repo.deleteById(userId);
-
-
     }
+
+    @Test
+    public void testGetUserByEmail() {
+        String email = "mikel_ct@hotmail.com";
+        User user = repo.getUserByEmail(email);
+        assertThat(user).isNotNull();
+    }
+
+    @Test
+    public void testCountById() {
+        Integer id = 4;
+        Long countById = repo.countById(id);
+        assertThat(countById).isNotNull().isGreaterThan(0);
+    }
+    @Test
+    public void testEnableUser() {
+        Integer id = 8;
+        repo.updateEnabledStatus(id, true);
+    }
+    @Test
+    public void testListFirstPage() {
+        int pageNumber = 0;
+        int pageSize = 4;
+        Pageable pageable =  PageRequest.of(pageNumber, pageSize);
+        Page<User> page = repo.findAll((org.springframework.data.domain.Pageable) pageable);
+
+        List<User> listUsers = page.getContent();
+        listUsers.forEach(user -> System.out.println(user));
+        assertThat(listUsers.size()).isEqualTo(pageSize);
+    }
+
+    @Test
+    public void testSearchUsers() {
+        String keyword = "Beto";
+        int pageNumber = 0;
+        int pageSize = 4;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<User> page = repo.findAll(keyword, pageable);
+
+        List<User> listUsers = page.getContent();
+        listUsers.forEach(user -> System.out.println(user));
+
+        assertThat(listUsers.size()).isGreaterThan(0);
+    }
+
 }

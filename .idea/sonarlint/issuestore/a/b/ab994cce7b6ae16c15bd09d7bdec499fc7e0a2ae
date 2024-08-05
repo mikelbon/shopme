@@ -1,0 +1,15 @@
+
+L
+java:S2589J"7Remove this expression which always evaluates to "true"(±ÙÇ
+W
+java:S4973L"<Strings and Boxed types should be compared using "equals()".(Ýÿ‡Ýúÿÿÿÿ
+k
+java:S3655U"PCall "Optional#isPresent()" or "!Optional#isEmpty()" before accessing the value.(„Ì¥¥ÿÿÿÿÿ
+k
+java:S36553"PCall "Optional#isPresent()" or "!Optional#isEmpty()" before accessing the value.(ÜŸ¯Öÿÿÿÿÿ
+X
+java:S6813"BRemove this field injection and use constructor injection instead.(êæÄÞ
+X
+java:S6813"BRemove this field injection and use constructor injection instead.(êæÄÞ
+X
+java:S6813"BRemove this field injection and use constructor injection instead.(êæÄÞ
